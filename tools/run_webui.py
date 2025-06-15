@@ -43,6 +43,10 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
+    logger.info(f"torch version: {torch.__version__}")
+    logger.info(f"torch.cuda.is_available(): {torch.cuda.is_available()}")
+    logger.info(f"args.device before logic: {args.device}")
+
     args.precision = torch.half if args.half else torch.bfloat16
 
     # Check if MPS or CUDA is available
