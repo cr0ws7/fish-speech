@@ -21,17 +21,13 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     && apt-get -y install --no-install-recommends python3 python3-pip python3-venv ${DEPENDENCIES} \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy only dependency files first for better caching
-COPY pyproject.toml ./
+COPY . .
 
 # Install Python dependencies
 RUN --mount=type=cache,target=/root/.cache,sharing=locked \
     set -ex \
     && pip3 install --break-system-packages torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128 \
     && pip3 install --break-system-packages -e .[stable]
-
-# Now copy the rest of the code
-COPY . .
 
 ENV GRADIO_SERVER_NAME="0.0.0.0"
 
