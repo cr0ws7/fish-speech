@@ -25,4 +25,4 @@ podman run --rm --device nvidia.com/gpu=all docker.io/nvidia/cuda:12.9.0-base-ub
 
 mv dockerfile Dockerfile
 podman build -t fish-speech .
-podman run --rm -it -p 7860:7860 fish-speech
+podman run --rm --device nvidia.com/gpu=all -it -p 7860:7860 fish-speech
