@@ -13,5 +13,4 @@ fi
 exec "$(command -v python3 || command -v python)" tools/run_webui.py \
     --llama-checkpoint-path "${LLAMA_CHECKPOINT_PATH}" \
     --decoder-checkpoint-path "${DECODER_CHECKPOINT_PATH}" \
-    --compile \
     ${DEVICE}
