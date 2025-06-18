@@ -26,3 +26,8 @@ podman run --rm --device nvidia.com/gpu=all docker.io/nvidia/cuda:12.9.0-base-ub
 mv dockerfile Dockerfile
 podman build -t fish-speech .
 podman run --rm --device nvidia.com/gpu=all -it -p 7860:7860 fish-speech
+
+# create a quantized model version
+python3 ./tools/llama/quantize.py --mode="int4" --checkpoint-path="checkpoints/openaudio-s1-mini"
+
+copy the codec.pth
