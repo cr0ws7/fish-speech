@@ -127,7 +127,7 @@ def decode_one_token_ar(
             previous_tokens=(
                 previous_tokens[:, 0] if previous_tokens is not None else None
             ),
-        )[0]
+        )[0].clone()  # <-- clone to avoid CUDA Graphs overwrite
     ]
 
     # Cleanup the cache
@@ -140,7 +140,7 @@ def decode_one_token_ar(
     a = codebooks[0] - model.tokenizer.semantic_begin_id
     a[a < 0] = 0
     hidden_states = model.fast_embeddings(a)
-    codebooks.append(a)
+    codebooks.append(a.clone())  # <-- clone here as well
 
     for codebook_idx in range(1, model.config.num_codebooks):
         input_pos = torch.tensor(
@@ -162,10 +162,8 @@ def decode_one_token_ar(
                 else None
             ),
         )[0]
-
         hidden_states = model.fast_embeddings(a)
-        codebooks.append(a)
-
+        codebooks.append(a.clone())  # <-- clone here as well
     codebooks = torch.stack(codebooks, dim=1)
     return codebooks.T
 
