@@ -9,7 +9,8 @@ ARG DEPENDENCIES="  \
     portaudio19-dev \
     libportaudio2 \
     libportaudiocpp0 \
-    ffmpeg"
+    ffmpeg \
+    python3-dev"  # <-- Added python3-dev for torch.compile
 
 WORKDIR /opt/fish-speech
 
