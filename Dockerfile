@@ -1,4 +1,4 @@
-FROM docker.io/nvidia/cuda:12.9.0-base-ubuntu24.04
+FROM docker.io/nvidia/cuda:12.8.0-base-ubuntu24.04
 
 ARG DEPENDENCIES="  \
     ca-certificates \
