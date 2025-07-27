@@ -35,18 +35,7 @@ sudo nvidia-ctk cdi generate --output=/etc/cdi/
 This means your NVIDIA driver version is newer than what the container expects.
 
 **Fix:**  
-Create a symlink from your installed version to the missing one:
-```sh
-sudo ln -s /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so.570.172.08 /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so.570.169
-```
-Then re-run your Podman command.
-
-If you see similar errors for other NVIDIA libraries (e.g. `libGLESv1_CM_nvidia.so.570.169`),  
-create a symlink from your installed version to the missing one:
-```sh
-sudo ln -s /usr/lib/x86_64-linux-gnu/libGLESv1_CM_nvidia.so.570.172.08 /usr/lib/x86_64-linux-gnu/libGLESv1_CM_nvidia.so.570.169
-```
-Repeat for any other missing `.570.169` NVIDIA libraries.
+Use fix_nvidia_driver.sh
 
 # podman GPU NVIDIA container support
 podman run --rm --device nvidia.com/gpu=all -it -p 7860:7860 fish-speech
