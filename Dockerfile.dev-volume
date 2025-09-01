@@ -1,0 +1,45 @@
+FROM docker.io/nvidia/cuda:12.8.0-base-ubuntu24.04
+
+ARG DEPENDENCIES="  \
+    ca-certificates \
+    libsox-dev \
+    build-essential \
+    cmake \
+    libasound-dev \
+    portaudio19-dev \
+    libportaudio2 \
+    libportaudiocpp0 \
+    ffmpeg \
+    python3-dev"  # <-- Added python3-dev for torch.compile
+
+WORKDIR /opt/fish-speech
+
+# Install system dependencies
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    set -ex \
+    && apt-get update \
+    && apt-get -y install --no-install-recommends python3 python3-pip python3-venv ${DEPENDENCIES} \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy only the files needed for dependency installation
+COPY pyproject.toml .
+COPY README.md .
+
+# Create a minimal structure for the package and install dependencies
+RUN --mount=type=cache,target=/root/.cache,sharing=locked \
+    set -ex \
+    && pip3 install --break-system-packages torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128 \
+    && mkdir -p fish_speech tools \
+    && touch fish_speech/__init__.py \
+    && touch tools/__init__.py \
+    && pip3 install --break-system-packages -e .[stable] \
+    && rm -rf fish_speech tools
+
+ENV GRADIO_SERVER_NAME="0.0.0.0"
+
+EXPOSE 7860
+
+# The source code will be mounted as volumes, so we don't COPY it here
+# The entrypoint will be available via volume mount
+CMD ["./entrypoint.sh"]

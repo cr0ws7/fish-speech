@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  fish-speech-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev-volume
+    image: fish-speech:dev-volume
+    container_name: fish-speech-dev
+    devices:
+      - "nvidia.com/gpu=all"
+    environment:
+      - CUDA_ENABLED=true
+      - GRADIO_SERVER_NAME=0.0.0.0
+    ports:
+      - "7860:7860"
+    volumes:
+      # Mount the source code directories
+      - ./fish_speech:/opt/fish-speech/fish_speech
+      - ./tools:/opt/fish-speech/tools
+      - ./docs:/opt/fish-speech/docs
+      # Mount configuration and script files
+      - ./entrypoint.sh:/opt/fish-speech/entrypoint.sh
+      - ./pyproject.toml:/opt/fish-speech/pyproject.toml
+      - ./README.md:/opt/fish-speech/README.md
+      - ./.project-root:/opt/fish-speech/.project-root
+      # Mount checkpoints if you have them
+      - ./checkpoints:/opt/fish-speech/checkpoints
+      # Keep the virtual environment and build artifacts in the container
+      # (these will not be overwritten by host mounts)
+    working_dir: /opt/fish-speech
+    stdin_open: true
+    tty: true
