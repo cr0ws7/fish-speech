@@ -51,3 +51,19 @@ podman run --rm --device nvidia.com/gpu=all -it -p 7860:7860 fish-speech
 python3 ./tools/llama/quantize.py --mode="int4" --checkpoint-path="checkpoints/openaudio-s1-mini"
 
 copy the codec.pth
+
+# backup
+
+## list images
+podman images
+
+## save image to tar
+podman save -o fish-speech.tar fish-speech
+
+## optional: compress
+gzip -c fish-speech.tar > fish-speech.tar.gz
+
+## restore later
+podman load -i fish-speech.tar
+## or for gz
+gunzip -c fish-speech.tar.gz | podman load
